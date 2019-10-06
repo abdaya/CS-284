@@ -59,7 +59,7 @@ public class IDLList<E> {
      */
     public boolean add(E elem) {
         if (head == null) { // Empty list
-            head = new Node<E>(elem, null, null);
+            head = new Node<E>(elem);
             tail = head;
         } else if (head == tail) { // Singleton list
             head = new Node<E>(elem, tail, null);
@@ -111,7 +111,7 @@ public class IDLList<E> {
      */
     public boolean append(E elem) {
         if (head == null) { // empty list
-            head = new Node<E>(elem, null, null);
+            head = new Node<E>(elem);
             tail = head;
             size++;
             return indices.add(head);

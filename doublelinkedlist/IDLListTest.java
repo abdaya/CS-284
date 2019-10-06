@@ -1,5 +1,7 @@
 package doublelinkedlist;
 
+import doublelinkedlist.IDLList;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -205,23 +207,20 @@ public class IDLListTest {
     }
 
     @Test
-    public void testRemoveE() {
+    public void testRemoveFirstOccurance() {
         IDLList<Integer> dll = new IDLList<>();
-
-        for (int i = 0; i < 10; i++) {
+        int size = new Integer(10);
+        for (int i = 0; i < size; i++) {
             dll.add(i);
         }
 
         assertFalse(dll.remove(100));
+        assertEquals(size, dll.size());
 
         assertTrue(dll.remove(0));
-
-        dll.remove(0);
-        assertNotEquals(dll.get(dll.size() - 1), new Integer(0));
-
-        dll.append(9);
-        dll.append(9);
-        assertEquals(dll.get(dll.size() - 1), new Integer(9));
+        size--;
+        assertEquals(size, dll.size());
+        assertNotEquals(dll.getLast(), new Integer(0));
     }
 
     @Test
