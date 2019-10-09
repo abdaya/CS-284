@@ -74,7 +74,7 @@ public class Complexity {
      */
     public void method5(int n) {
         int counter = 0;
-        for (int i = 0; i < n; i = i ^ 2) {
+        for (int i = 2; i < n; i *= 2) {
             System.out.println("Operation " + counter);
             counter++;
         }
