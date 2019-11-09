@@ -84,6 +84,7 @@ public class BST<E extends Comparable<E>> {
         root = add(item, root);
     }
 
+    /* TODO: IMPLEMENT REMOVE MAX */
     // private Node<E> removeMax(Node<E> current) {
     // if (current.right == null) {
     // current = current.
