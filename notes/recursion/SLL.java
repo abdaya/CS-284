@@ -6,11 +6,6 @@ public class SLL<E> {
         private F data;
         private Node<F> next;
 
-        public Node(F data) {
-            this.data = data;
-            this.next = null;
-        }
-
         public Node(F data, Node<F> next) {
             this.data = data;
             this.next = next;
