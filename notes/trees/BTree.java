@@ -2,8 +2,8 @@ package notes.trees;
 
 import notes.lists.SLL;
 
-import java.util.Queue;
-import java.util.LinkedList;
+// import java.util.Queue;
+// import java.util.LinkedList;
 
 public class BTree<E> {
 
