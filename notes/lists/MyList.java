@@ -18,7 +18,6 @@ public class MyList<E> {
     }
 
     // Methods
-
     public boolean add(E item) {
         if (free == data.length) {
             resize();
