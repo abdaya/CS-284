@@ -24,7 +24,7 @@ public class HeapSort {
             int left = (2 * parent) + 1;
             int right = (2 * parent) + 2;
 
-            while (right < end) {
+            while (right <= end) {
 
                 int maxChild = left;
                 if(right < end && arr[right] > arr[left]) 
