@@ -6,17 +6,18 @@ public class QuickSort {
 
 
     public static void sort(int[] arr) {
-
+        sort(arr, 0, arr.length - 1);
     }
 
     private static void sort(int[] arr, int left, int right) {
-
+        if (left < right) {
+            int pivot = partition(arr, left, right);
+            sort(arr, left, pivot - 1);
+            sort(arr, pivot + 1, right);
+        }
     }
 
-    private static void partition(int[] arr, int left, int right) {
-        if (arr.length <= 1)
-            return;
-
+    private static int partition(int[] arr, int left, int right) {
         int pivot = left;
         do {
             while (left < arr.length && arr[left] <= arr[pivot])
@@ -30,6 +31,7 @@ public class QuickSort {
         } while (left < right);
 
         swap(arr, pivot, right);
+        return right;
     }
     
     private static void swap(int[] arr, int i, int j) {
@@ -41,7 +43,8 @@ public class QuickSort {
     public static void main(String[] args) {
         int[] arr = { 44, 75, 23, 43, 55, 12, 64, 77, 33 };
         System.out.println((Arrays.toString(arr)));
-        partition(arr, 0, arr.length - 1);
+        // partition(arr, 0, arr.length - 1);
+        sort(arr);
         System.out.println((Arrays.toString(arr)));
     }
     
