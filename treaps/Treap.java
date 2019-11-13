@@ -28,7 +28,13 @@ public class Treap<E extends Comparable<E>> {
          * @return the root node of the result
          */
         public Node<F> rotateRight() {
-            return null;
+            if (left == null)
+                throw new IllegalStateException();
+
+            Node<F> root = left;
+            this.left = root.right;
+            root.right = this;
+            return root;
         }
 
         /**
@@ -39,7 +45,12 @@ public class Treap<E extends Comparable<E>> {
          * @return the root node of the result.
          */
         public Node<F> rotateLeft() {
-            return null;
+            if (right == null)
+                throw new IllegalStateException();
+            Node<F> root = right;
+            this.right = root.left;
+            root.left = this;
+            return root;
         }
 
     }
