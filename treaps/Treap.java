@@ -52,6 +52,10 @@ public class Treap<E extends Comparable<E>> {
             return root;
         }
 
+        public String toString() {
+            return "(" + data.toString() + "," + priority + ")";
+        }
+
     }
 
     private static final int BOUND = 100;
@@ -86,27 +90,95 @@ public class Treap<E extends Comparable<E>> {
      * @return true if the key was successfully added to the Treap, false if the key already exists.
      */
     public boolean add(E key) {
-        return true;
+        if (priorities.size() == BOUND)
+            throw new IllegalStateException();
+
+        int priority = priorityGenerator.nextInt(BOUND);
+        while(priorities.contains(priority)) 
+            priority = priorityGenerator.nextInt(BOUND);
+
+        priorities.add(priority);
+        return add(key, priority);
     }
 
+    /**
+     * Adds a given key to the Treap with a given priority.
+     * @param key
+     * @param priority
+     * @throws IllegalStateException if the priority is already taken.
+     * @return true if the key was successfully added to the Treap, false if the key already exists.
+     */
     public boolean add(E key, int priority) {
+        if (priorities.contains(priority))
+            throw new IllegalArgumentException();
+
+        Stack<Node<E>> path = new Stack<>();
+        Node<E> current = root;
+
+        while (current != null) {
+            path.push(current);
+            int i = current.data.compareTo(key);
+            if (i < 0) // go right
+                current = current.right;
+            else if (i > 0) // go left
+                current = current.left;
+            else 
+                return false;
+        }
+
+        Node<E> last = path.peek();
+        Node<E> leaf = new Node<E>(key, priority);
+        priorities.add(priority);
+        
+        if (last.data.compareTo(key) < 0) 
+            last.right = leaf;
+        else
+            last.left = leaf;
+        
+        path.push(leaf);
+        reheap(path);
+
         return true;
     }
-
+    
+    /**
+     * Restores the heap invariant given a path.
+     * @param path
+     */
+    private void reheap(Stack<Node<E>> path) {
+        // TODO
+    }
+    
     public boolean delete(E key) {
+        // TODO
         return true;
     }
-
+    
     private boolean find(Node<E> root, E key) {
+        // TODO
         return true;
     }
-
+    
     public boolean find(E key) {
+        // TODO
         return find(root, key);
     }
 
+
+    private StringBuilder toString(Node<E> current, int n) {
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; i < n; i++)
+            b.append("-");
+        if (current == null)
+            return b.append("*\n");
+        b.append(current.toString());
+        b.append(toString(current.left, n + 1));
+        b.append(toString(current.right, n + 1));
+        return b;
+    }
+
     public String toString() {
-        return "";
+        return toString(root, 0).toString();
     }
     
 }
