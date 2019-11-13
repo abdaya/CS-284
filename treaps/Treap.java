@@ -54,8 +54,12 @@ public class Treap<E extends Comparable<E>> {
 
     }
 
+    private static final int BOUND = 100;
+
     private Node<E> root;
     private Random priorityGenerator;
+
+    private Set<Integer> priorities;
 
     /**
      * Creates an empty Treap.
@@ -63,8 +67,9 @@ public class Treap<E extends Comparable<E>> {
     public Treap() {
         root = null;
         priorityGenerator = new Random();
+        priorities = new HashSet<Integer>();
     }
-
+    
     /**
      * Creates an empty Treap with a given seed.
      * @param seed
@@ -72,9 +77,14 @@ public class Treap<E extends Comparable<E>> {
     public Treap(long seed) {
         root = null;
         priorityGenerator = new Random(seed);
+        priorities = new HashSet<Integer>();
     }
 
-
+    /**
+     * Adds a given key to the Treap with a random priority.
+     * @param key
+     * @return true if the key was successfully added to the Treap, false if the key already exists.
+     */
     public boolean add(E key) {
         return true;
     }
