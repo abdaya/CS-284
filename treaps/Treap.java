@@ -30,7 +30,6 @@ public class Treap<E extends Comparable<E>> {
         public Node<F> rotateRight() {
             if (left == null)
                 throw new IllegalStateException();
-
             Node<F> root = left;
             this.left = root.right;
             root.right = this;
@@ -58,12 +57,21 @@ public class Treap<E extends Comparable<E>> {
     private Node<E> root;
     private Random priorityGenerator;
 
+    /**
+     * Creates an empty Treap.
+     */
     public Treap() {
-
+        root = null;
+        priorityGenerator = new Random();
     }
 
+    /**
+     * Creates an empty Treap with a given seed.
+     * @param seed
+     */
     public Treap(long seed) {
-
+        root = null;
+        priorityGenerator = new Random(seed);
     }
 
 
