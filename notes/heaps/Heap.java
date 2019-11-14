@@ -1,10 +1,10 @@
 package notes.heaps;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Heap<E extends Comparable<E>> {
 
-    private ArrayList<E> data;
+    private List<E> data;
     private int free;
 
     public Heap(int size) {
