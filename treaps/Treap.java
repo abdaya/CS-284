@@ -200,7 +200,45 @@ public class Treap<E extends Comparable<E>> {
     }
     
     public boolean delete(E key) {
-        // TODO
+        Node<E> prev = null;
+        Node<E> current = root;
+        while (current != null) {
+            int i = current.data.compareTo(key);
+            if (i < 0) { // go right
+                prev = current;
+                current = current.right;
+            } else if (i > 0) { // go left
+                prev = current;
+                current = current.left;
+            } else {
+                break;
+            }
+        }
+
+        if (current == null)
+            return false;
+
+        while (current.left != null || current.right != null) {
+            if (prev == null) {
+                root = current.rotateLeft();
+                break;
+            }
+
+            if (prev.left.equals(current)) {
+                prev.left = current.rotateLeft();
+                prev = prev.left;
+                current = prev.left;
+            } else if (prev.right.equals(current)) {
+                prev.right = current.rotateRight();
+                prev = prev.right;
+                current = prev.right;
+            }
+        }
+        if (prev.left.equals(current)) {
+            prev.left = null;
+        } else {
+            prev.right = null;
+        }
         return true;
     }
     
