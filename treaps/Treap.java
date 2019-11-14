@@ -112,7 +112,7 @@ public class Treap<E extends Comparable<E>> {
         if (priorities.contains(priority))
             throw new IllegalArgumentException();
 
-        Stack<Node<E>> path = new Stack<>();
+        ArrayDeque<Node<E>> path = new ArrayDeque<>();
         Node<E> current = root;
 
         while (current != null) {
@@ -145,8 +145,58 @@ public class Treap<E extends Comparable<E>> {
      * Restores the heap invariant given a path.
      * @param path
      */
-    private void reheap(Stack<Node<E>> path) {
-        // TODO
+    private void reheap(ArrayDeque<Node<E>> path) {
+        if (path.size() <= 1)
+            return;
+
+        Node<E> child = path.poll();
+        Node<E> parent = path.poll();
+        while (parent != null && parent.priority < child.priority) {
+            Node<E> grandparent = path.poll();
+            if (parent.left.equals(child)) {
+                swapRight(grandparent, parent); // rotate right
+            } else {
+                swapLeft(grandparent, parent); // rotate left
+            }
+        }
+    }
+    
+    /**
+     * Performs the right rotation of a given child node reliative to its parent.
+     * @param parent
+     * @param child
+     */
+    private void swapRight(Node<E> parent, Node<E> child) {
+        if (parent == null){
+            root = child.rotateRight();
+            return;
+        }
+        
+        if (parent.left.equals(child)) 
+            parent.left = parent.rotateRight();
+        else if (parent.right.equals(child))
+            parent.right = parent.rotateRight();
+        else 
+            throw new IllegalStateException();
+    }
+
+    /**
+     * Performs the left rotation of a given child node reliative to its parent.
+     * @param parent
+     * @param child
+     */
+    private void swapLeft(Node<E> parent, Node<E> child) {
+        if (parent == null) {
+            root = child.rotateLeft();
+            return;
+        }
+
+        if (parent.left.equals(child))
+            parent.left = parent.rotateLeft();
+        else if (parent.right.equals(child))
+            parent.right = parent.rotateLeft();
+        else
+            throw new IllegalStateException();
     }
     
     public boolean delete(E key) {
@@ -154,13 +204,20 @@ public class Treap<E extends Comparable<E>> {
         return true;
     }
     
-    private boolean find(Node<E> root, E key) {
-        // TODO
-        return true;
+    private boolean find(Node<E> current, E key) {
+        while (current != null) {
+            int i = current.data.compareTo(key);
+            if (i < 0) // go right
+                current = current.right;
+            else if (i > 0) // go left
+                current = current.left;
+            else
+                return true;
+        }
+        return false;
     }
     
     public boolean find(E key) {
-        // TODO
         return find(root, key);
     }
 
