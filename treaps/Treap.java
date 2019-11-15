@@ -152,17 +152,15 @@ public class Treap<E extends Comparable<E>> {
         else
             last.left = leaf;
 
-        path.push(leaf);
-        reheap(path);
+        reheap(path, leaf);
         return true;
     }
     
     /**
-     * Restores the heap invariant given a path.
+     * Restores the heap invariant given a path from the root to the current node.
      * @param path
      */
-    private void reheap(ArrayDeque<Node<E>> path) {
-        Node<E> child = path.poll();
+    private void reheap(ArrayDeque<Node<E>> path, Node<E> child) {
         Node<E> parent = path.poll();
         while (parent != null && parent.priority < child.priority) { // max heap
             Node<E> grandparent = path.poll();
@@ -236,35 +234,69 @@ public class Treap<E extends Comparable<E>> {
         }
 
         // delete the node
-        if (prev == null) 
+        if (prev == null){
+            priorities.remove(root.priority);
             root = null; // remove the root of an empty tree
-        else
+        } else {
+            priorities.remove(current.priority);
             if (prev.left != null && prev.left.equals(current))
                 prev.left = null;
             else if (prev.right != null && prev.right.equals(current))
                 prev.right = null;   
-
+        }
         return true;
     }
     
+    /**
+     * The internal recursive binary search for a given key and a current node.
+     * @param current
+     * @param key
+     * @return
+     */
     private boolean find(Node<E> current, E key) {
-        while (current != null) {
-            int i = current.data.compareTo(key);
-            if (i < 0) // go right
-                current = current.right;
-            else if (i > 0) // go left
-                current = current.left;
-            else
-                return true;
-        }
-        return false;
+        if (current == null)
+            return false;
+        int i = current.data.compareTo(key);
+        return (i < 0) ? find(current.right, key) : (i > 0) ? find(current.left, key) : true;
     }
     
+    /**
+     * Performs a binary search for a given key.
+     * @param key
+     * @return true is the key exists, false if it does not.
+     */
     public boolean find(E key) {
         return find(root, key);
     }
 
+    /**
+     * @return the size of the current treap.
+     */
+    public int size() {
+        return priorities.size();
+    }
+    
+    /**
+     * @return true if the treap is empty, false otherwise.
+     */
+    public boolean isEmpty() {
+        return root == null;
+    }
+    
+    /**
+     * @return true if the treap is full, false otherwise.
+     */
+    public boolean isFull() {
+        return priorities.size() == BOUND;
+    }
 
+    /**
+     * The internal recursive toString method that creates a string 
+     * representation via the pre-order traversal of a treap.
+     * @param current
+     * @param n
+     * @return
+     */
     private StringBuilder toString(Node<E> current, int n) {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < n; i++)
@@ -277,6 +309,9 @@ public class Treap<E extends Comparable<E>> {
         return b;
     }
 
+    /**
+     * Returns a string representation of the pre-order traversal of a treap.
+     */
     public String toString() {
         return toString(root, 0).toString();
     }
