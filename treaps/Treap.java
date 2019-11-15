@@ -1,6 +1,7 @@
 package treaps;
 
 import java.util.*;
+import java.lang.reflect.Method;
 
 public class Treap<E extends Comparable<E>> {
 
@@ -52,6 +53,18 @@ public class Treap<E extends Comparable<E>> {
             return root;
         }
 
+        public Node<F> rotateDown() {
+            if (left != null && right != null)
+                return (left.priority < right.priority) ? rotateRight() : rotateLeft();
+            else if (left == null)
+                return rotateLeft();
+            else
+                return rotateRight();
+        }
+
+        /**
+         * Returns the string representation of a node.
+         */
         public String toString() {
             return "(" + data.toString() + "," + priority + ")";
         }
@@ -97,7 +110,6 @@ public class Treap<E extends Comparable<E>> {
         while(priorities.contains(priority)) 
             priority = priorityGenerator.nextInt(BOUND);
 
-        priorities.add(priority);
         return add(key, priority);
     }
 
@@ -112,6 +124,11 @@ public class Treap<E extends Comparable<E>> {
         if (priorities.contains(priority))
             throw new IllegalArgumentException();
 
+        if (root == null) {
+            root = new Node<E>(key, priority);
+            return true;
+        }
+        
         ArrayDeque<Node<E>> path = new ArrayDeque<>();
         Node<E> current = root;
 
@@ -126,18 +143,17 @@ public class Treap<E extends Comparable<E>> {
                 return false;
         }
 
-        Node<E> last = path.peek();
         Node<E> leaf = new Node<E>(key, priority);
         priorities.add(priority);
         
-        if (last.data.compareTo(key) < 0) 
+        Node<E> last = path.peek();
+        if (last.data.compareTo(key) < 0)
             last.right = leaf;
         else
             last.left = leaf;
-        
+
         path.push(leaf);
         reheap(path);
-
         return true;
     }
     
@@ -146,99 +162,88 @@ public class Treap<E extends Comparable<E>> {
      * @param path
      */
     private void reheap(ArrayDeque<Node<E>> path) {
-        if (path.size() <= 1)
-            return;
-
         Node<E> child = path.poll();
         Node<E> parent = path.poll();
-        while (parent != null && parent.priority < child.priority) {
+        while (parent != null && parent.priority < child.priority) { // max heap
             Node<E> grandparent = path.poll();
-            if (parent.left.equals(child)) {
-                swapRight(grandparent, parent); // rotate right
+            Node<E> nextChild;
+            if (parent.left != null && parent.left.equals(child)) {
+                nextChild = parent.rotateRight();
+                swap(grandparent, parent, nextChild); // rotate right
             } else {
-                swapLeft(grandparent, parent); // rotate left
+                nextChild = parent.rotateLeft();
+                swap(grandparent, parent, nextChild); // rotate left
             }
+            child = nextChild;
+            parent = grandparent;
+        }
+    }
+
+    /**
+     * Performs a swap given a the parent, the current child, and next child to replace the current.
+     * @param grandparent 
+     * @param parent 
+     * @param child 
+     */
+    private void swap(Node<E> grandparent, Node<E> parent, Node<E> child) {
+        if (grandparent == null) {
+            root = child;
+        } else {
+            if (grandparent.left != null && grandparent.left.equals(parent)) 
+                grandparent.left = child;
+            if (grandparent.right != null && grandparent.right.equals(parent))
+                grandparent.right = child;
         }
     }
     
     /**
-     * Performs the right rotation of a given child node reliative to its parent.
-     * @param parent
-     * @param child
+     * Deletes a given key from the treap
+     * @param key
+     * @return true if the key was deleted or false if the key does not exist.
      */
-    private void swapRight(Node<E> parent, Node<E> child) {
-        if (parent == null){
-            root = child.rotateRight();
-            return;
-        }
-        
-        if (parent.left.equals(child)) 
-            parent.left = parent.rotateRight();
-        else if (parent.right.equals(child))
-            parent.right = parent.rotateRight();
-        else 
-            throw new IllegalStateException();
-    }
-
-    /**
-     * Performs the left rotation of a given child node reliative to its parent.
-     * @param parent
-     * @param child
-     */
-    private void swapLeft(Node<E> parent, Node<E> child) {
-        if (parent == null) {
-            root = child.rotateLeft();
-            return;
-        }
-
-        if (parent.left.equals(child))
-            parent.left = parent.rotateLeft();
-        else if (parent.right.equals(child))
-            parent.right = parent.rotateLeft();
-        else
-            throw new IllegalStateException();
-    }
-    
     public boolean delete(E key) {
         Node<E> prev = null;
         Node<E> current = root;
-        while (current != null) {
-            int i = current.data.compareTo(key);
+        // get the node 
+        int i;
+        while (current != null && (i = current.data.compareTo(key)) != 0) {
             if (i < 0) { // go right
                 prev = current;
                 current = current.right;
             } else if (i > 0) { // go left
                 prev = current;
                 current = current.left;
-            } else {
-                break;
             }
         }
 
-        if (current == null)
+        if (current == null) // key did not exist
             return false;
 
+        // rotate the node down
         while (current.left != null || current.right != null) {
-            if (prev == null) {
-                root = current.rotateLeft();
-                break;
-            }
-
-            if (prev.left.equals(current)) {
-                prev.left = current.rotateLeft();
+            if (prev == null) { // current is the root
+                root = current.rotateDown();
+                prev = root;
+            } else if (prev.left != null && prev.left.equals(current)) {
+                // current is the previous node's left child
+                prev.left = current.rotateDown();
                 prev = prev.left;
-                current = prev.left;
-            } else if (prev.right.equals(current)) {
-                prev.right = current.rotateRight();
+            } else if (prev.right != null && prev.right.equals(current)) {
+                // current is the previous node's right child
+                prev.right = current.rotateDown();
                 prev = prev.right;
-                current = prev.right;
             }
         }
-        if (prev.left.equals(current)) {
-            prev.left = null;
-        } else {
-            prev.right = null;
-        }
+
+        // delete the node
+        if (prev == null) 
+            root = null; // remove the root of an empty tree
+        else
+            if (prev.left != null && prev.left.equals(current))
+                prev.left = null;
+            else if (prev.right != null && prev.right.equals(current))
+                prev.right = null;   
+
         return true;
     }
     
@@ -266,7 +271,7 @@ public class Treap<E extends Comparable<E>> {
             b.append("-");
         if (current == null)
             return b.append("*\n");
-        b.append(current.toString());
+        b.append(current.toString() + "\n");
         b.append(toString(current.left, n + 1));
         b.append(toString(current.right, n + 1));
         return b;
