@@ -1,7 +1,6 @@
 package treaps;
 
 import java.util.*;
-import java.lang.reflect.Method;
 
 public class Treap<E extends Comparable<E>> {
 
@@ -53,13 +52,20 @@ public class Treap<E extends Comparable<E>> {
             return root;
         }
 
+        /**
+         * Performs a rotation of a node similar to bubble down.
+         * 
+         * @return
+         */
         public Node<F> rotateDown() {
             if (left != null && right != null)
                 return (left.priority < right.priority) ? rotateRight() : rotateLeft();
             else if (left == null)
                 return rotateLeft();
-            else
+            else if (right == null)
                 return rotateRight();
+            else
+                return this;
         }
 
         /**
@@ -86,9 +92,10 @@ public class Treap<E extends Comparable<E>> {
         priorityGenerator = new Random();
         priorities = new HashSet<Integer>();
     }
-    
+
     /**
      * Creates an empty Treap with a given seed.
+     * 
      * @param seed
      */
     public Treap(long seed) {
@@ -99,15 +106,17 @@ public class Treap<E extends Comparable<E>> {
 
     /**
      * Adds a given key to the Treap with a random priority.
+     * 
      * @param key
-     * @return true if the key was successfully added to the Treap, false if the key already exists.
+     * @return true if the key was successfully added to the Treap, false if the key
+     *         already exists.
      */
     public boolean add(E key) {
         if (priorities.size() == BOUND)
             throw new IllegalStateException();
 
         int priority = priorityGenerator.nextInt(BOUND);
-        while(priorities.contains(priority)) 
+        while (priorities.contains(priority))
             priority = priorityGenerator.nextInt(BOUND);
 
         return add(key, priority);
@@ -115,10 +124,12 @@ public class Treap<E extends Comparable<E>> {
 
     /**
      * Adds a given key to the Treap with a given priority.
+     * 
      * @param key
      * @param priority
      * @throws IllegalStateException if the priority is already taken.
-     * @return true if the key was successfully added to the Treap, false if the key already exists.
+     * @return true if the key was successfully added to the Treap, false if the key
+     *         already exists.
      */
     public boolean add(E key, int priority) {
         if (priorities.contains(priority))
@@ -126,9 +137,10 @@ public class Treap<E extends Comparable<E>> {
 
         if (root == null) {
             root = new Node<E>(key, priority);
+            priorities.add(priority);
             return true;
         }
-        
+
         ArrayDeque<Node<E>> path = new ArrayDeque<>();
         Node<E> current = root;
 
@@ -139,13 +151,13 @@ public class Treap<E extends Comparable<E>> {
                 current = current.right;
             else if (i > 0) // go left
                 current = current.left;
-            else 
+            else
                 return false;
         }
 
         Node<E> leaf = new Node<E>(key, priority);
         priorities.add(priority);
-        
+
         Node<E> last = path.peek();
         if (last.data.compareTo(key) < 0)
             last.right = leaf;
@@ -155,9 +167,10 @@ public class Treap<E extends Comparable<E>> {
         reheap(path, leaf);
         return true;
     }
-    
+
     /**
      * Restores the heap invariant given a path from the root to the current node.
+     * 
      * @param path
      */
     private void reheap(ArrayDeque<Node<E>> path, Node<E> child) {
@@ -178,31 +191,34 @@ public class Treap<E extends Comparable<E>> {
     }
 
     /**
-     * Performs a swap given a the parent, the current child, and next child to replace the current.
-     * @param grandparent 
-     * @param parent 
-     * @param child 
+     * Performs a swap given a the parent, the current child, and next child to
+     * replace the current.
+     * 
+     * @param grandparent
+     * @param parent
+     * @param child
      */
     private void swap(Node<E> grandparent, Node<E> parent, Node<E> child) {
         if (grandparent == null) {
             root = child;
         } else {
-            if (grandparent.left != null && grandparent.left.equals(parent)) 
+            if (grandparent.left != null && grandparent.left.equals(parent))
                 grandparent.left = child;
             if (grandparent.right != null && grandparent.right.equals(parent))
                 grandparent.right = child;
         }
     }
-    
+
     /**
      * Deletes a given key from the treap
+     * 
      * @param key
      * @return true if the key was deleted or false if the key does not exist.
      */
     public boolean delete(E key) {
         Node<E> prev = null;
         Node<E> current = root;
-        // get the node 
+        // get the node
         int i;
         while (current != null && (i = current.data.compareTo(key)) != 0) {
             if (i < 0) { // go right
@@ -234,7 +250,7 @@ public class Treap<E extends Comparable<E>> {
         }
 
         // delete the node
-        if (prev == null){
+        if (prev == null) {
             priorities.remove(root.priority);
             root = null; // remove the root of an empty tree
         } else {
@@ -242,13 +258,14 @@ public class Treap<E extends Comparable<E>> {
             if (prev.left != null && prev.left.equals(current))
                 prev.left = null;
             else if (prev.right != null && prev.right.equals(current))
-                prev.right = null;   
+                prev.right = null;
         }
         return true;
     }
-    
+
     /**
      * The internal recursive binary search for a given key and a current node.
+     * 
      * @param current
      * @param key
      * @return
@@ -259,9 +276,10 @@ public class Treap<E extends Comparable<E>> {
         int i = current.data.compareTo(key);
         return (i < 0) ? find(current.right, key) : (i > 0) ? find(current.left, key) : true;
     }
-    
+
     /**
      * Performs a binary search for a given key.
+     * 
      * @param key
      * @return true is the key exists, false if it does not.
      */
@@ -275,14 +293,14 @@ public class Treap<E extends Comparable<E>> {
     public int size() {
         return priorities.size();
     }
-    
+
     /**
      * @return true if the treap is empty, false otherwise.
      */
     public boolean isEmpty() {
         return root == null;
     }
-    
+
     /**
      * @return true if the treap is full, false otherwise.
      */
@@ -291,8 +309,9 @@ public class Treap<E extends Comparable<E>> {
     }
 
     /**
-     * The internal recursive toString method that creates a string 
-     * representation via the pre-order traversal of a treap.
+     * The internal recursive toString method that creates a string representation
+     * via the pre-order traversal of a treap.
+     * 
      * @param current
      * @param n
      * @return
@@ -315,5 +334,27 @@ public class Treap<E extends Comparable<E>> {
     public String toString() {
         return toString(root, 0).toString();
     }
-    
+
+    public static void main(String[] args) {
+        char[] keys = new char[] { 'z', 's', 'r', 'h', 'k', 'n', 'x', 'j', 'e', 'u', 'f', 'c', 'm', 'd', 'y', 'o', 'q',
+                'b' };
+        long seed = 177833990L;
+        Treap<Character> t = new Treap<>(seed);
+
+        System.out.println(t);
+        // t.add('q');
+        // t.delete('q');
+        for (int i = 0; i < keys.length; i++) {
+            System.out.println("Added: " + keys[i] + " -> " + t.add(keys[i]));
+            // System.out.println(t);
+        }
+
+        while (t.root != null) {
+            System.out.println(t.root.data);
+            t.delete(t.root.data);
+        }
+        System.out.println();
+        // System.out.println(t);
+    }
+
 }
