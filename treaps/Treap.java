@@ -28,8 +28,7 @@ public class Treap<E extends Comparable<E>> {
          * @return the root node of the result
          */
         public Node<F> rotateRight() {
-            if (left == null)
-                return this;
+            if (left == null) return this;
             Node<F> root = left;
             this.left = root.right;
             root.right = this;
@@ -44,8 +43,7 @@ public class Treap<E extends Comparable<E>> {
          * @return the root node of the result.
          */
         public Node<F> rotateLeft() {
-            if (right == null)
-                return this;
+            if (right == null) return this;
             Node<F> root = right;
             this.right = root.left;
             root.left = this;
@@ -76,8 +74,6 @@ public class Treap<E extends Comparable<E>> {
         }
 
     }
-
-    private static final int BOUND = 100;
 
     private Node<E> root;
     private Random priorityGenerator;
@@ -112,12 +108,9 @@ public class Treap<E extends Comparable<E>> {
      *         already exists.
      */
     public boolean add(E key) {
-        if (priorities.size() == BOUND)
-            throw new IllegalStateException();
-
-        int priority = priorityGenerator.nextInt(BOUND);
+        int priority = priorityGenerator.nextInt();
         while (priorities.contains(priority))
-            priority = priorityGenerator.nextInt(BOUND);
+            priority = priorityGenerator.nextInt();
 
         return add(key, priority);
     }
