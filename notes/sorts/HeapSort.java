@@ -2,7 +2,20 @@ package notes.sorts;
 
 import java.util.Arrays;
 
+import java.util.PriorityQueue;
+
+import notes.heaps.Heap;;
+
 public class HeapSort {
+
+    public static void sortH(int[] arr) {
+        PriorityQueue<Integer> h = new PriorityQueue<>();
+        for (int i : arr)
+            h.add(i);
+        
+        for (int i = 0; i < arr.length; i++) 
+            arr[i] = h.poll();        
+    }   
 
     public static void sort(int[] arr) {
 
@@ -73,7 +86,9 @@ public class HeapSort {
         int[] arr = { 74, 66, 89, 6, 39, 29, 76, 32, 18, 28, 37, 26, 20 };
         // int[] arr = { 10,6,9,5,3,8,7,4,2,1 };
         System.out.println(Arrays.toString(arr));
-        HeapSort.sort(arr);
+        // HeapSort.sort(arr);
+        // System.out.println(Arrays.toString(arr));
+        HeapSort.sortH(arr);
         System.out.println(Arrays.toString(arr));
     }
     
