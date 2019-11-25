@@ -150,14 +150,15 @@ public class Treap<E extends Comparable<E>> {
 
         Node<E> leaf = new Node<E>(key, priority);
         priorities.add(priority);
-
+        
         Node<E> last = path.peek();
         if (last.data.compareTo(key) < 0)
             last.right = leaf;
         else
             last.left = leaf;
-
-        reheap(path, leaf);
+            
+        path.push(leaf);
+        reheap(path);
         return true;
     }
 
@@ -166,7 +167,8 @@ public class Treap<E extends Comparable<E>> {
      * 
      * @param path
      */
-    private void reheap(ArrayDeque<Node<E>> path, Node<E> child) {
+    private void reheap(ArrayDeque<Node<E>> path) {
+        Node<E> child = path.poll();
         Node<E> parent = path.poll();
         while (parent != null && parent.priority < child.priority) { // max heap
             Node<E> grandparent = path.poll();
@@ -211,6 +213,7 @@ public class Treap<E extends Comparable<E>> {
     public boolean delete(E key) {
         Node<E> prev = null;
         Node<E> current = root;
+        
         // get the node
         int i;
         while (current != null && (i = current.data.compareTo(key)) != 0) {
@@ -222,10 +225,10 @@ public class Treap<E extends Comparable<E>> {
                 current = current.left;
             }
         }
-
-        if (current == null) // key did not exist
+        
+        if (current == null)
             return false;
-
+            
         // rotate the node down
         while (current.left != null || current.right != null) {
             if (prev == null) { // current is the root
@@ -245,7 +248,7 @@ public class Treap<E extends Comparable<E>> {
         // delete the node
         if (prev == null) {
             priorities.remove(root.priority);
-            root = null; // remove the root of an empty tree
+            root = null; // empty the tree
         } else {
             priorities.remove(current.priority);
             if (prev.left != null && prev.left.equals(current))
@@ -253,6 +256,7 @@ public class Treap<E extends Comparable<E>> {
             else if (prev.right != null && prev.right.equals(current))
                 prev.right = null;
         }
+        
         return true;
     }
 
@@ -278,27 +282,6 @@ public class Treap<E extends Comparable<E>> {
      */
     public boolean find(E key) {
         return find(root, key);
-    }
-
-    /**
-     * @return the size of the current treap.
-     */
-    public int size() {
-        return priorities.size();
-    }
-
-    /**
-     * @return true if the treap is empty, false otherwise.
-     */
-    public boolean isEmpty() {
-        return root == null;
-    }
-
-    /**
-     * @return true if the treap is full, false otherwise.
-     */
-    public boolean isFull() {
-        return priorities.size() == BOUND;
     }
 
     /**
@@ -334,19 +317,23 @@ public class Treap<E extends Comparable<E>> {
         long seed = 177833990L;
         Treap<Character> t = new Treap<>(seed);
 
-        System.out.println(t);
+        // System.out.println(t);
         // t.add('q');
         // t.delete('q');
         for (int i = 0; i < keys.length; i++) {
-            System.out.println("Added: " + keys[i] + " -> " + t.add(keys[i]));
+            t.add(keys[i]);
+            // System.out.println("Added: " + keys[i] + " -> " + t.add(keys[i]));
             // System.out.println(t);
         }
-
-        while (t.root != null) {
-            System.out.println(t.root.data);
-            t.delete(t.root.data);
+        System.out.println(t);
+        for (int j = 0; j < keys.length; j++) {
+            t.delete(keys[j]);
         }
-        System.out.println();
+        // while (t.root != null) {
+        //     // System.out.println(t.root.data);
+        //     t.delete(t.root.data);
+        // }
+        System.out.println(t);
         // System.out.println(t);
     }
 
