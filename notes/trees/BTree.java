@@ -126,6 +126,25 @@ public class BTree<E> {
         return postorder(root);
     }
 
+    private BTree<Integer> sumTree(Node<Integer> curr1, Node<Integer> curr2) {
+        if (curr1 == null && curr2 == null) {
+            return new BTree<>();
+        } else {
+            int sum = (curr1 == null) ? curr2.data : (curr2 == null) ? curr1.data : curr1.data + curr2.data;
+            if (curr1 == null)
+                return new BTree<Integer>(sum, sumTree(null, curr2.left), sumTree(null, curr2.right));
+            else if (curr2 == null)
+                return new BTree<Integer>(sum, sumTree(curr1.left, null), sumTree(curr1.right, null));
+            else
+                return new BTree<Integer>(sum, sumTree(curr1.left, curr2.left), sumTree(curr1.right, curr2.right));
+        }
+    }   
+
+
+    public BTree<Integer> sumTree(BTree<Integer> t) {
+        return sumTree((Node<Integer>) root, t.root);
+    }
+
     private StringBuilder toString(Node<E> current, int n) {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < n; i++) {
@@ -139,6 +158,10 @@ public class BTree<E> {
             b.append(toString(current.right, n + 1));
         }
         return b;
+    }
+    
+    public String toString() {
+        return toString(root, 0).toString();
     }
 
     // private boolean isComplete(Node<E> current, Queue<Node<E>> queue) {
@@ -162,9 +185,6 @@ public class BTree<E> {
     // return isComplete(root, q);
     // }
 
-    public String toString() {
-        return toString(root, 0).toString();
-    }
 
     public static void main(String[] args) {
 
@@ -181,7 +201,7 @@ public class BTree<E> {
         BTree<Integer> tt = new BTree<>(7, tt1, tt0);
         System.out.println(tt);
 
-        System.out.println(t.isomorphic(tt));
+        System.out.println(t.sumTree(tt));
     }
 
 }
