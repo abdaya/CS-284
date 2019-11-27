@@ -155,8 +155,10 @@ public class HuffmanTree {
 	// ********************************************************** //
 
 	public String bitsToString(Boolean[] encoding) {
-		// TODO Complete bitsToString method
-		return null;
+		StringBuilder b = new StringBuilder();
+		for (Boolean bool : encoding) 
+			b.append((bool) ? "1" : "0");
+		return b.toString();
 	}
 
 	private StringBuilder toString(InternalNode current, int n) {
