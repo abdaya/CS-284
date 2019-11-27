@@ -9,7 +9,7 @@ import java.util.PriorityQueue;
  * Third: Test you code.
  */
 
-// TODO: Name and Pledge
+// TODO: Robert Schaedler III
 
 // Pledge:
 // Name:
@@ -159,10 +159,34 @@ public class HuffmanTree {
 		return null;
 	}
 
+	private StringBuilder toString(InternalNode current, int n) {
+		StringBuilder b = new StringBuilder();
+		StringBuilder indent = new StringBuilder();
+
+		for (int i = 0; i < n; i++) 
+			indent.append(" ");
+		
+		b.append(indent.toString());
+
+		Node left = current.left;
+		Node right = current.right;
+
+		b.append(current.toString() + "\n");
+		if (left instanceof LeafNode)
+			b.append(indent.toString() + " " + left.toString() + "\n");
+		else 
+			b.append(toString((InternalNode) left, n + 1));
+		
+		if (right instanceof LeafNode)
+			b.append(indent.toString() + " " + right.toString() + "\n");
+		else 
+			b.append(toString((InternalNode) right, n + 1));
+		
+		return b;
+	}
+
 	public String toString() {
-		// TODO Complete toString method (see assignment specification)
-		// HINT: Might need helper method for preOrderTraversal
-		return null;
+		return (root instanceof InternalNode) ? toString((InternalNode)root, 0).toString() : root.toString();
 	}
 
 	public String decode(Boolean[] coding) {
@@ -187,5 +211,7 @@ public class HuffmanTree {
 		HuffmanTree t = new HuffmanTree(s); // Creates specific Huffman Tree for "s"
 		// Now you can use encode, decode, and toString to interact with your specific
 		// Huffman Tree
+
+		System.out.println(t);
 	}
 }
