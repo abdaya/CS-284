@@ -167,18 +167,18 @@ public class HuffmanTree {
 			indent.append(" ");
 		
 		b.append(indent.toString());
+		b.append(current.toString() + "\n");
 
 		Node left = current.left;
 		Node right = current.right;
 
-		b.append(current.toString() + "\n");
 		if (left instanceof LeafNode)
-			b.append(indent.toString() + " " + left.toString() + "\n");
+			b.append(indent + " " + left.toString() + "\n");
 		else 
 			b.append(toString((InternalNode) left, n + 1));
 		
 		if (right instanceof LeafNode)
-			b.append(indent.toString() + " " + right.toString() + "\n");
+			b.append(indent + " " + right.toString() + "\n");
 		else 
 			b.append(toString((InternalNode) right, n + 1));
 		
