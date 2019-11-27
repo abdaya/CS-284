@@ -12,6 +12,7 @@ public class QuickSort {
     private static void sort(int[] arr, int left, int right) {
         if (left < right) {
             int pivot = partition(arr, left, right);
+            System.out.println(Arrays.toString(arr) + "\tpivot: " + pivot);
             sort(arr, left, pivot - 1);
             sort(arr, pivot + 1, right);
         }
