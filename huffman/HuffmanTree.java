@@ -192,8 +192,27 @@ public class HuffmanTree {
 	}
 
 	public String decode(Boolean[] coding) {
-		// TODO Complete decode method
-		return null;
+
+		Node curr = root;
+		StringBuilder b = new StringBuilder();
+		
+		for (Boolean code : coding) {
+			if (curr instanceof InternalNode) 
+				if (code) // go right
+					curr = ((InternalNode) curr).right;
+				else // go left
+					curr = ((InternalNode) curr).left;
+			
+			if (curr instanceof LeafNode) {
+				b.append(((LeafNode) curr).data);
+				curr = root;
+			}
+		}
+
+		if (curr != root)
+			throw new IllegalArgumentException(curr.toString());
+			
+		return b.toString();
 	}
 
 	public Boolean[] encode(String inputText) {
