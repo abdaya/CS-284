@@ -1,6 +1,6 @@
 package huffman;
 
-import java.util.PriorityQueue;
+import java.util.*;
 
 /*
  * Instructions: 
@@ -156,7 +156,7 @@ public class HuffmanTree {
 
 	public String bitsToString(Boolean[] encoding) {
 		StringBuilder b = new StringBuilder();
-		for (Boolean bool : encoding) 
+		for (Boolean bool : encoding)
 			b.append((bool) ? "1" : "0");
 		return b.toString();
 	}
@@ -165,9 +165,9 @@ public class HuffmanTree {
 		StringBuilder b = new StringBuilder();
 		StringBuilder indent = new StringBuilder();
 
-		for (int i = 0; i < n; i++) 
+		for (int i = 0; i < n; i++)
 			indent.append(" ");
-		
+
 		b.append(indent.toString());
 		b.append(current.toString() + "\n");
 
@@ -176,33 +176,33 @@ public class HuffmanTree {
 
 		if (left instanceof LeafNode)
 			b.append(indent + " " + left.toString() + "\n");
-		else 
+		else
 			b.append(toString((InternalNode) left, n + 1));
-		
+
 		if (right instanceof LeafNode)
 			b.append(indent + " " + right.toString() + "\n");
-		else 
+		else
 			b.append(toString((InternalNode) right, n + 1));
-		
+
 		return b;
 	}
 
 	public String toString() {
-		return (root instanceof InternalNode) ? toString((InternalNode)root, 0).toString() : root.toString();
+		return (root instanceof InternalNode) ? toString((InternalNode) root, 0).toString() : root.toString();
 	}
 
 	public String decode(Boolean[] coding) {
 
 		Node curr = root;
 		StringBuilder b = new StringBuilder();
-		
+
 		for (Boolean code : coding) {
-			if (curr instanceof InternalNode) 
+			if (curr instanceof InternalNode)
 				if (code) // go right
 					curr = ((InternalNode) curr).right;
 				else // go left
 					curr = ((InternalNode) curr).left;
-			
+
 			if (curr instanceof LeafNode) {
 				b.append(((LeafNode) curr).data);
 				curr = root;
@@ -211,19 +211,53 @@ public class HuffmanTree {
 
 		if (curr != root)
 			throw new IllegalArgumentException(curr.toString());
-			
+
 		return b.toString();
 	}
 
+	private boolean dfs(Node curr, List<Boolean> path, Character c) {
+		if (curr instanceof LeafNode) {
+			return (((LeafNode) curr).data == c) ? true : false;
+		} else if (dfs(((InternalNode) curr).left, path, c)) {
+			path.add(0, false);
+			return true;
+		} else if (dfs(((InternalNode) curr).right, path, c)) {
+			path.add(0, true);
+			return true;
+		} else {
+			// path.remove(path.size() - 1);
+			return false;
+		}
+	}
+
 	public Boolean[] encode(String inputText) {
-		// TODO Complete encode method
-		return null;
+		List<Boolean> encoding = new ArrayList<>();
+
+		for (Character c : inputText.toCharArray()) {
+			List<Boolean> temp = new ArrayList<>();
+			if (!dfs(root, temp, c))
+				throw new IllegalArgumentException();
+			encoding.addAll(temp);
+		}
+		return (Boolean[]) encoding.toArray(new Boolean[encoding.size()]);
 	}
 
 	public Boolean[] efficientEncode(String inputText) {
-		// TODO Complete efficientEncode method
-		// NOTE: Should only go through the tree once.
-		return null;
+		Map<Character, List<Boolean>> h = new HashMap<>();
+		List<Boolean> encoding = new ArrayList<>();
+
+		for (Character c : inputText.toCharArray()) {
+			if (h.containsKey(c)) {
+				encoding.addAll(h.get(c));
+			} else {
+				List<Boolean> path = new ArrayList<>();
+				if (!dfs(root, encoding, c))
+					throw new IllegalArgumentException();
+				h.put(c, path);
+				encoding.addAll(path);
+			}
+		}
+		return (Boolean[]) encoding.toArray(new Boolean[encoding.size()]);
 	}
 
 	public static void main(String[] args) {
