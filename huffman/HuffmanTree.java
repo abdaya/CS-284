@@ -9,8 +9,6 @@ import java.util.*;
  * Third: Test you code.
  */
 
-// TODO: Robert Schaedler III
-
 // Pledge:
 // Name:
 
@@ -154,6 +152,11 @@ public class HuffmanTree {
 	// ******************** End of Stub Code ******************** //
 	// ********************************************************** //
 
+	/**
+	 * 
+	 * @param encoding
+	 * @return
+	 */
 	public String bitsToString(Boolean[] encoding) {
 		StringBuilder b = new StringBuilder();
 		for (Boolean bool : encoding)
@@ -161,6 +164,12 @@ public class HuffmanTree {
 		return b.toString();
 	}
 
+	/**
+	 * The internal method used to traverse the tree in-order.
+	 * @param current
+	 * @param n
+	 * @return
+	 */
 	private StringBuilder toString(InternalNode current, int n) {
 		StringBuilder b = new StringBuilder();
 		StringBuilder indent = new StringBuilder();
@@ -187,10 +196,19 @@ public class HuffmanTree {
 		return b;
 	}
 
+	/**
+	 * Returns the string representation of the current Huffman tree
+	 */
 	public String toString() {
 		return (root instanceof InternalNode) ? toString((InternalNode) root, 0).toString() : root.toString();
 	}
 
+	/**
+	 * Decodes a huffman encoding and returns its string representation
+	 * @param coding
+	 * @throws IllegalArgumentException if the encoding is invalid
+	 * @return
+	 */
 	public String decode(Boolean[] coding) {
 
 		Node curr = root;
@@ -215,6 +233,13 @@ public class HuffmanTree {
 		return b.toString();
 	}
 
+	/**
+	 * The internal search method for seaerching for a character in the Huffman tree  
+	 * @param curr the current node
+	 * @param path the path to the character that is built as the character is searched for
+	 * @param c the caracter to search for
+	 * @return true if the character is in the tree, false otherwise
+	 */
 	private boolean dfs(Node curr, List<Boolean> path, Character c) {
 		if (curr instanceof LeafNode) {
 			return (((LeafNode) curr).data == c) ? true : false;
@@ -230,6 +255,12 @@ public class HuffmanTree {
 		}
 	}
 
+	/**
+	 * Encodes a given string into a boolean array based of the current huffman tree
+	 * @param inputText the string to encode
+	 * @throws IllegalArgumentException if the string cannot be encoded
+	 * @return the boolean array representing the encoded string
+	 */
 	public Boolean[] encode(String inputText) {
 		List<Boolean> encoding = new ArrayList<>();
 
@@ -242,6 +273,12 @@ public class HuffmanTree {
 		return (Boolean[]) encoding.toArray(new Boolean[encoding.size()]);
 	}
 
+	/**
+	 * Encodes a given string into a boolean array based on the current huffman tree efficiently.
+	 * @param inputText the string to encode
+	 * @throws IllegalArgumentException if the string cannot be encoded
+	 * @return the boolean array representing the encoded string
+	 */
 	public Boolean[] efficientEncode(String inputText) {
 		Map<Character, List<Boolean>> h = new HashMap<>();
 		List<Boolean> encoding = new ArrayList<>();
@@ -251,7 +288,7 @@ public class HuffmanTree {
 				encoding.addAll(h.get(c));
 			} else {
 				List<Boolean> path = new ArrayList<>();
-				if (!dfs(root, encoding, c))
+				if (!dfs(root, path, c))
 					throw new IllegalArgumentException();
 				h.put(c, path);
 				encoding.addAll(path);
