@@ -9,8 +9,8 @@ import java.util.*;
  * Third: Test you code.
  */
 
-// Pledge:
-// Name:
+// Pledge: I pledge my honor that I have abided by the Stevens Honor System.
+// Name: Robert Schaedler III
 
 /**
  * HW6 CS284 Fall 2019 Implements a Huffman encoding tree. The included code has
