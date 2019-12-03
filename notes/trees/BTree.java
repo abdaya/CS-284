@@ -143,6 +143,42 @@ public class BTree<E> {
         return sumTree((Node<Integer>) root, t.root);
     }
 
+    public ArrayList<E> bfs() {
+        ArrayList<E> result = new ArrayList<>();
+        Queue<Node<E>> q = new LinkedList<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            Node<E> curr = q.poll();
+            result.add(curr.data);
+            if (curr.left != null)
+                q.offer(curr.left);
+            if (curr.right != null)
+                q.offer(curr.right);
+        }
+        return result;
+    }
+
+    public ArrayList<ArrayList<E>> bfs2() {
+        ArrayList<ArrayList<E>> result = new ArrayList<>();
+        Queue<Node<E>> q = new LinkedList<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            q.offer(null);
+            Node<E> curr = q.poll();
+            ArrayList<E> level = new ArrayList<>();
+            while (curr != null) {
+                level.add(curr.data);
+                if (curr.left != null)
+                    q.offer(curr.left);
+                if (curr.right != null)
+                    q.offer(curr.right);
+                curr = q.poll();
+            }
+            result.add(level);
+        }
+        return result;
+    }
+
     private boolean ancestors(E item, Node<E> curr, ArrayList<E> path) {
         if (curr == null) {
             return false;
@@ -220,7 +256,9 @@ public class BTree<E> {
         // System.out.println(tt);
 
         // System.out.println(t.sumTree(tt));
-        System.out.println(t.ancestors(14));
+        // System.out.println(t.ancestors(14));
+        System.out.println(t.bfs());
+        System.out.println(t.bfs2());
     }
 
 }
