@@ -12,6 +12,38 @@ public class Heap<E extends Comparable<E>> {
         free = 0;
     }
 
+    public Heap(ArrayList<E> l) {
+        data = l;
+        free = 0;
+        heapify();
+    }
+
+    private void heapify() {
+        for (int i = data.size() / 2; i > 0; i--)
+            percolateDown(i);
+    }
+    
+    private void percolateDown(int i) {
+        int parent = i;
+        int left = (2 * parent) + 1;
+        int right = (2 * parent) + 2;
+
+        while (right <= data.size()) {
+            int minChild = left;
+            if (right != data.size() && data.get(left).compareTo(data.get(right)) > 0)
+                minChild = right;
+
+            if (data.get(parent).compareTo(data.get(minChild)) < 0)
+                break;
+            
+            swap(parent, minChild);
+            parent = minChild;
+            left = (2 * parent) + 1;
+            right = (2 * parent) + 2;
+        }
+
+    }
+ 
     public void add(E item) {
 
         data.add(free, item);
