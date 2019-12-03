@@ -1,9 +1,8 @@
 package notes.trees;
 
-import notes.lists.SLL;
+import java.util.*;
 
-// import java.util.Queue;
-// import java.util.LinkedList;
+import notes.lists.SLL;
 
 public class BTree<E> {
 
@@ -138,11 +137,31 @@ public class BTree<E> {
             else
                 return new BTree<Integer>(sum, sumTree(curr1.left, curr2.left), sumTree(curr1.right, curr2.right));
         }
-    }   
-
+    }
 
     public BTree<Integer> sumTree(BTree<Integer> t) {
         return sumTree((Node<Integer>) root, t.root);
+    }
+
+    private boolean ancestors(E item, Node<E> curr, ArrayList<E> path) {
+        if (curr == null) {
+            return false;
+        } else if (curr.data == item) {
+            return true;
+        } else {
+            if (ancestors(item, curr.left, path) || ancestors(item, curr.right, path)) {
+                path.add(0, curr.data);
+                return true;
+            } else
+                return false;
+        }
+    }
+
+    public ArrayList<E> ancestors(E item) {
+        ArrayList<E> path = new ArrayList<>();
+        if (!ancestors(item, root, path))
+            throw new IllegalArgumentException("Item is not in tree: " + item);
+        return path;
     }
 
     private StringBuilder toString(Node<E> current, int n) {
@@ -159,7 +178,7 @@ public class BTree<E> {
         }
         return b;
     }
-    
+
     public String toString() {
         return toString(root, 0).toString();
     }
@@ -185,7 +204,6 @@ public class BTree<E> {
     // return isComplete(root, q);
     // }
 
-
     public static void main(String[] args) {
 
         BTree<Integer> t0 = new BTree<>(3);
@@ -199,9 +217,10 @@ public class BTree<E> {
         BTree<Integer> tt111 = new BTree<>(24, new BTree<Integer>(), new BTree<Integer>(14));
         BTree<Integer> tt1 = new BTree<>(12, new BTree<>(10), tt111);
         BTree<Integer> tt = new BTree<>(7, tt1, tt0);
-        System.out.println(tt);
+        // System.out.println(tt);
 
-        System.out.println(t.sumTree(tt));
+        // System.out.println(t.sumTree(tt));
+        System.out.println(t.ancestors(14));
     }
 
 }
