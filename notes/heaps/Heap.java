@@ -64,24 +64,9 @@ public class Heap<E extends Comparable<E>> {
 
         E temp = data.get(0);
         data.set(0, data.remove(free - 1));
-        int p = 0;
-        int left = (2 * p) + 1;
-        int right = (2 * p) + 2;
+        
+        percolateDown(0);
 
-        while (right <= free) {
-            int minChild = left;
-            if (right != free - 1 && data.get(right).compareTo(data.get(left)) < 0)
-                minChild = right;
-
-            // minChild holds the index of the smallest of the two children
-            if (data.get(p).compareTo(data.get(minChild)) < 0)
-                break;
-
-            swap(p, minChild);
-            p = minChild;
-            left = (2 * p) + 1;
-            right = (2 * p) + 2;
-        }
         free--;
         return temp;
     }
