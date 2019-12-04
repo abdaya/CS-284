@@ -3,12 +3,12 @@ package huffman;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class HuffmanTreeTest {
+public class HuffmanTest {
 
     private final String s = "AAAAAABCCCCCCDDEEEEEFGGGHIIIIIIIIIIJJJJJ";
     private final HuffmanTree h;
 
-    public HuffmanTreeTest() {
+    public HuffmanTest() {
         h = new HuffmanTree(s);
     }
 
