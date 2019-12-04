@@ -158,6 +158,7 @@ public class HuffmanTree {
 	 * @return
 	 */
 	public String bitsToString(Boolean[] encoding) {
+		if (encoding == null) throw new IllegalArgumentException();
 		StringBuilder b = new StringBuilder();
 		for (Boolean bool : encoding)
 			b.append((bool) ? "1" : "0");
@@ -171,8 +172,8 @@ public class HuffmanTree {
 	 * @return
 	 */
 	private StringBuilder toString(InternalNode current, int n) {
-		StringBuilder b = new StringBuilder();
-		StringBuilder indent = new StringBuilder();
+
+		StringBuilder b = new StringBuilder(), indent = new StringBuilder();
 
 		for (int i = 0; i < n; i++)
 			indent.append(" ");
@@ -180,8 +181,7 @@ public class HuffmanTree {
 		b.append(indent.toString());
 		b.append(current.toString() + "\n");
 
-		Node left = current.left;
-		Node right = current.right;
+		Node left = current.left, right = current.right;
 
 		if (left instanceof LeafNode)
 			b.append(indent + " " + left.toString() + "\n");
@@ -210,6 +210,7 @@ public class HuffmanTree {
 	 * @return
 	 */
 	public String decode(Boolean[] coding) {
+		if (coding == null) throw new IllegalArgumentException();
 
 		Node curr = root;
 		StringBuilder b = new StringBuilder();
@@ -227,7 +228,7 @@ public class HuffmanTree {
 			}
 		}
 
-		if (curr != root)
+		if (curr != root) // invalid encoding, did not end on a leaf
 			throw new IllegalArgumentException(curr.toString());
 
 		return b.toString();
@@ -250,7 +251,6 @@ public class HuffmanTree {
 			path.add(0, true);
 			return true;
 		} else {
-			// path.remove(path.size() - 1);
 			return false;
 		}
 	}
@@ -266,7 +266,7 @@ public class HuffmanTree {
 
 		for (Character c : inputText.toCharArray()) {
 			List<Boolean> temp = new ArrayList<>();
-			if (!dfs(root, temp, c))
+			if (!dfs(root, temp, c)) // character not in tree
 				throw new IllegalArgumentException();
 			encoding.addAll(temp);
 		}
@@ -288,7 +288,7 @@ public class HuffmanTree {
 				encoding.addAll(h.get(c));
 			} else {
 				List<Boolean> path = new ArrayList<>();
-				if (!dfs(root, path, c))
+				if (!dfs(root, path, c)) // character not in tree
 					throw new IllegalArgumentException();
 				h.put(c, path);
 				encoding.addAll(path);
