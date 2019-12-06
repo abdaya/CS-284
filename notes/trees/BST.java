@@ -1,5 +1,7 @@
 package notes.trees;
 
+import java.util.*;
+
 /**
  * Binary Search Tree of non-null elements
  * 
@@ -106,7 +108,7 @@ public class BST<E extends Comparable<E>> {
             } else {
                 current.data = max(current.left);
                 current = remove(current.left, current.data);
-                // current = removeMax(current.right);
+                // current = removeMax(current.left);
             }
             size--;
         } else {
@@ -133,6 +135,35 @@ public class BST<E extends Comparable<E>> {
         return max(root);
     }
 
+    public int width() {
+        if (root == null)
+            return 0;
+
+        Queue<Node<E>> q = new LinkedList<>();
+        q.offer(root);
+        q.offer(null);
+
+        int max = 0;
+        while (!q.isEmpty()) {
+            
+            Node<E> curr = q.poll();
+            int count = 0;
+            while (curr != null) {
+                if (curr.left != null)
+                    q.offer(curr.left);
+                if (curr.right != null)
+                    q.offer(curr.right);
+                curr = q.poll();
+                count++;
+            }
+            q.offer(null);
+            max = Math.max(max, count);
+        }
+        
+        return max;
+
+    }
+        
     private StringBuilder toString(Node<E> current, int n) {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < n; i++) {
