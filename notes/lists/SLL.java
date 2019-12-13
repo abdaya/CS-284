@@ -116,6 +116,17 @@ public class SLL<E> {
         size++;
     }
 
+    private void bump(SLL<Pair<E, Integer>> h, E item) {
+        Node<Pair<E, Integer>> curr = h.head;
+        while (curr.next != null && !curr.data.getX().equals(item)) 
+            curr = curr.next;
+        
+        if (curr.data.getX().equals(item)) 
+            curr.data.setY(curr.data.getY() + 1);
+        else 
+            curr.next = new Node<>(new Pair<>(item, 1));
+    } 
+
     private void addAfter(Node<E> n, E item) {
         n.next = new Node<>(item, n.next);
         size++;
